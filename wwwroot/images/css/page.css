@@ -1,0 +1,41 @@
+html {
+    overflow: hidden;
+}
+
+body {
+    background-color: #404040;
+}
+
+
+#BODY {
+    width: 4320px; height: 3840px;
+    position: relative;
+
+    transform-origin: left top;
+    transform: scale(1.0, 1.0);
+
+    background-color: #000;
+}
+
+
+.frame {
+    width: 2160px; height: 3840px;
+    position: absolute;
+    overflow: hidden;
+    background-color: #000;
+}
+
+#FRAMEL {
+    left: 0; top: 0;
+}
+
+#FRAMER {
+    left: 2160px; top: 0;
+}
+
+
+.image {
+    width: 100%;
+    position: absolute;
+    left: 0;
+}

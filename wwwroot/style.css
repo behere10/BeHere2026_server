@@ -1,0 +1,144 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 0;
+    margin: 20px;
+}
+
+p {
+    margin: 0.75rem 0.75rem 0;
+}
+
+
+
+.red {
+    color: #F00;
+}
+
+.green {
+    color: #0F0;
+}
+
+.cyan {
+    color: #0FF;
+}
+
+.magenta {
+    color: #F0F;
+}
+
+.details .red {
+    color: #C00;
+}
+
+.details .green {
+    color: #0C0;
+}
+
+.details .blue {
+    color: #00C;
+}
+
+.details .yellow {
+    color: #CC0;
+}
+
+.details .cyan {
+    color: #0CC;
+}
+
+.details .magenta {
+    color: #C0C;
+}
+
+.details .orange {
+    color: #C88;
+}
+
+
+
+.bold {
+    font-weight: bold;
+}
+
+
+
+.status {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.status div {
+    padding: 0;
+}
+
+.title {
+    background-color: #000;
+    color: #FFF;
+    white-space: nowrap;
+    font-size: 18px;
+    padding: 0.75rem !important;
+}
+
+.title > span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.deviceName {
+    width: 10%;
+    font-weight: bold;
+}
+
+.deviceMode {
+    width: 20%;
+    font-weight: bold;
+    text-align: center;
+}
+
+.summary {
+    width: 65%;
+}
+
+.detailButton {
+    width: 5%;
+    text-align: right;
+    vertical-align: bottom;
+}
+
+.detailButton img {
+    width: 22px;
+    height: 22px;
+}
+
+.warnings {
+    padding: 0;
+}
+
+
+
+#systemMessage {
+    position: fixed;
+    left:0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+#systemMessage h2 {
+    margin: 20px;
+}
+
+#messages {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 10rem;
+    overflow-y: scroll;
+    margin: 20px;
+}
+
+#messages p {
+    margin: 0;
+    margin-bottom: 0.5rem;
+    line-height: 120%;
+    font-family: monospace;
+}

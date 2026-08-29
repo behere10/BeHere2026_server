@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test &amp; Monitoring - BeHere 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Test &amp; Monitoring</h1>
+
+    <div id="status">STATUS: NOT CONNECTED</div>
+
+    <p>
+        <button id="sendImageButton">SEND IMAGE DATA</button>
+    </p>
+
+    <p>
+        <button id="sendStatusButton">SEND STATUS DATA</button><br>
+
+        Device Name: <input type="text" id="deviceName" value="camera0">
+
+        <br>
+
+        Thermal Status: <input type="radio" name="thermalStatus" value="nominal" checked="checked">
+                        <label for="nominal">Nominal</label>
+
+                        <input type="radio" name="thermalStatus" value="fair">
+                        <label for="fair">Fair</label>
+
+                        <input type="radio" name="thermalStatus" value="serious">
+                        <label for="serious">Serious</label>
+
+                        <input type="radio" name="thermalStatus" value="critical">
+                        <label for="critical">Critical</label>
+
+        <br>
+
+        Internal battery: <input type="radio" name="internalBatteryStatus" value="unplugged" checked="checked">
+                          <label for="unplugged">Unplugged</label>
+
+                          <input type="radio" name="internalBatteryStatus" value="charging">
+                          <label for="charging">Charging</label>
+
+                          <input type="radio" name="internalBatteryStatus" value="full">
+                          <label for="full">Full</label>
+
+                          (
+                            <input type="text" id="internalBatteryLevel" value="100"> %
+                          )
+
+        <br>
+
+        Mode: <input type="radio" name="mode" value="ar" checked="checked">
+              <label for="ar">AR</label>
+
+              <input type="radio" name="mode" value="stay">
+              <label for="stay">Power Saving</label>
+
+              (
+                AR Mode Time: <input type="text" id="arModeTime" value="60000"> seconds
+              )
+
+        <br>
+
+        MIDI Board: <input type="radio" name="midiBoard" value="yes" checked="checked">
+                    <label for="yes">YES</label>
+
+                    <input type="radio" name="midiBoard" value="no">
+                    <label for="no">NO</label>
+
+        <br>
+
+        External battery: <input type="radio" name="externalBatteryStatus" value="full" checked="checked">
+                          <label for="full">Full</label>
+
+                          <input type="radio" name="externalBatteryStatus" value="discharging">
+                          <label for="discharging">Discharging</label>
+
+                          <input type="radio" name="externalBatteryStatus" value="charging">
+                          <label for="charging">Charging</label>
+
+                          (
+                            <input type="text" id="chargeVoltage" value="20.0"> V /
+                            <input type="text" id="chargeCurrent" value="0.0"> A
+                          )
+
+        <br>
+
+        LCD: <input type="radio" name="lcd" value="on" checked="checked">
+             <label for="on">ON</label>
+
+             <input type="radio" name="lcd" value="off">
+             <label for="off">OFF</label>
+
+        <br>
+
+        Pi PICO Temperature: <input type="text" id="picoTemp" value="30.0"> ℃
+
+    </p>
+
+    <h2>Received Message</h2>
+    <div id="messages"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

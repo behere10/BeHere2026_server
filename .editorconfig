@@ -1,0 +1,21 @@
+# This file is licensed under CC0 1.0 Universal.
+# https://creativecommons.org/publicdomain/zero/1.0/
+
+# EditorConfig: https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+tab_width = 4
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{manifest,vcxproj,sln}]
+charset = utf-8-bom

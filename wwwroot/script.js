@@ -16,8 +16,10 @@ function newStatus(status)
             MIDI Board: <span class="midiBoard"></span>
         </p>
         <p>
-            Power Bank Status: <span class="pbStatus"></span><span class="pbCharging"> (<span class="chargeVoltage"></span>V / <span class="chargeCurrent"></span>A)</span>,
-            Elapsed time in AR mode: <span class="arModeTime"></span> sec
+            Power Bank Status: <span class="pbStatus"></span><span class="pbCharging"> (<span class="chargeVoltage"></span>V / <span class="chargeCurrent"></span>A)</span>
+        </p>
+        <p>
+            AR Tracking State: <span class="arTrackingState"></span>, Elapsed time in AR mode: <span class="arModeTime"></span> sec
         </p>
         <p>
             LCD Power: <span class="lcdPower"></span>,
@@ -99,6 +101,7 @@ function updateStatus(status)
     let $pbCharging = $root.find('.pbCharging');
     let $chargeVoltage = $root.find('.chargeVoltage');
     let $chargeCurrent = $root.find('.chargeCurrent');
+    let $arTrackingState = $root.find('.arTrackingState');
     let $arModeTime = $root.find('.arModeTime');
 
     let $lcdPower = $root.find('.lcdPower');
@@ -118,6 +121,7 @@ function updateStatus(status)
     $pbStatus.empty();
     $chargeVoltage.empty();
     $chargeCurrent.empty();
+    $arTrackingState.empty();
     $arModeTime.empty();
 
     $lcdPower.empty();
@@ -144,11 +148,16 @@ function updateStatus(status)
     */
 
 
-    if (status.isAR) {
-        $mode.append('<span class="green">AR</span>');
+    if (status.midiBoard) {
+        if (status.isAR) {
+            $mode.append('<span class="green">AR</span>');
+        }
+        else {
+            $mode.append('<span class="cyan">POWER-SAVING</span>');
+        }
     }
     else {
-        $mode.append('<span class="cyan">POWER-SAVING</span>');
+        $mode.append('<span class="green">AR-DISPLAYOUT</span>');
     }
 
 
@@ -192,22 +201,28 @@ function updateStatus(status)
         $midiBoard.append('<span class="magenta">None</span>');
     }
 
-    if (status.internalBatteryStatus === 'unplugged') {
-        $pbStatus.append('<span class="red">Empty</span>');
-        $pbCharging.hide();
-    }
-    else if(4.0 < status.chargeVoltage && status.chargeVoltage < 9000.0) {
-        if (0.1 < status.chargeCurrent && status.chargeCurrent < 9000.0) {
-            $pbStatus.append('<span class="red">Charging</span>');
-            $pbCharging.show();
+    if (status.midiBoard) {
+        if (status.internalBatteryStatus === 'unplugged') {
+            $pbStatus.append('<span class="red">Empty</span>');
+            $pbCharging.hide();
+        }
+        else if(4.0 < status.chargeVoltage && status.chargeVoltage < 9000.0) {
+            if (0.1 < status.chargeCurrent && status.chargeCurrent < 9000.0) {
+                $pbStatus.append('<span class="red">Charging</span>');
+                $pbCharging.show();
+            }
+            else {
+                $pbStatus.append('<span class="green">Full</span>');
+                $pbCharging.show();
+            }
         }
         else {
-            $pbStatus.append('<span class="green">Full</span>');
-            $pbCharging.show();
+            $pbStatus.append('<span class="cyan">Discharging</span>');
+            $pbCharging.hide();
         }
     }
     else {
-        $pbStatus.append('<span class="cyan">Discharging</span>');
+        $pbStatus.append('---');
         $pbCharging.hide();
     }
 
@@ -218,6 +233,19 @@ function updateStatus(status)
     $chargeCurrent.append(`${current}`);
 
 
+    if (status.isAR) {
+        if (status.arTrackingState === "not available") {
+            $arTrackingState.append(`<span class="red">${status.arTrackingState}</span>`);
+        }
+        else {
+            $arTrackingState.append(`<span class="green">${status.arTrackingState}</span>`);
+        }
+    }
+    else {
+        $arTrackingState.append(`---`);
+    }
+
+
     if (status.arModeTime < timeLimitARMode) {
         $arModeTime.append(`<span class="green">${status.arModeTime}</span>`);
     }
@@ -226,25 +254,41 @@ function updateStatus(status)
     }
 
 
-    if (status.lcd) {
-        $lcdPower.append(`<span class="green">ON</span>`);
+    if (status.midiBoard) {
+        if (status.lcd) {
+            $lcdPower.append(`<span class="green">ON</span>`);
+        }
+        else {
+            $lcdPower.append(`<span class="cyan">OFF</span>`);
+        }
     }
     else {
-        $lcdPower.append(`<span class="cyan">OFF</span>`);
+        $lcdPower.append(`---`);
     }
 
 
-    const picoTempC = status.picoTemp.toFixed(1);
-    $picoTempC.append(`${picoTempC}`);
+    if (status.midiBoard) {
+        const picoTempC = status.picoTemp.toFixed(1);
+        $picoTempC.append(`${picoTempC}`);
 
-    const picoTempF = (status.picoTemp * 9.0 / 5.0 + 32.0).toFixed(1);
-    $picoTempF.append(`${picoTempF}`);
+        const picoTempF = (status.picoTemp * 9.0 / 5.0 + 32.0).toFixed(1);
+        $picoTempF.append(`${picoTempF}`);
+    }
+    else {
+        $picoTempC.append(`---`);
+        $picoTempF.append(`---`);
+    }
 
 
-    if (status.isAR) {
-        $deviceMode.html('<span class="green">AR</span>');
-    } else {
-        $deviceMode.html('<span class="cyan">POWER-SAVING</span>');
+    if (status.midiBoard) {
+        if (status.isAR) {
+            $deviceMode.html('<span class="green">AR</span>');
+        } else {
+            $deviceMode.html('<span class="cyan">POWER-SAVING</span>');
+        }
+    }
+    else {
+        $deviceMode.html('<span class="green">AR-DISPLAYOUT</span>');
     }
 
 
@@ -302,12 +346,20 @@ function updateStatus(status)
         warnings += '<p class="bold red">Switched to POWER-SAVING mode due to critical overheating.</p>';
     }
 
-    if (status.arModeTime >= timeLimitARMode && status.externalBatteryStatus === 'discharging') {
-        warnings += '<p class="bold red">Charging is recommended.</p>'
+    if (status.midiBoard) {
+        if (status.arModeTime >= timeLimitARMode && status.externalBatteryStatus === 'discharging') {
+            warnings += '<p class="bold red">Charging is recommended.</p>'
+        }
+
+        if (status.internalBatteryStatus === 'unplugged') {
+            warnings += '<p class="bold red">Power bank is empty; please charge it.</p>';
+        }
     }
 
-    if (status.internalBatteryStatus === 'unplugged') {
-        warnings += '<span class="bold red">Power bank is empty; please charge it.</span>';
+    if (status.isAR) {
+        if (status.arTrackingState === "not available") {
+            warnings += '<p class="bold red">AR tracking is not available.</p>';
+        }
     }
 
     if (warnings === '') {
@@ -365,6 +417,8 @@ document.addEventListener('DOMContentLoaded', () =>
             };
 
             ws.send(JSON.stringify(initialMessage));
+
+            $('#systemMessage').hide();
         };
 
 
@@ -402,12 +456,16 @@ document.addEventListener('DOMContentLoaded', () =>
         ws.onclose = (event) => {
             addMessage('CONNECTION LOST to the server, RETRYING CONNECTION in 5 seconds...');
             setTimeout(connectWebSocket, 5000);
+
+            $('#systemMessage').show();
         };
 
 
         ws.onerror = (event) => {
             addMessage('CONNECTION ERROR with the server, CONNECTION CLOSED');
             ws.close();
+
+            $('#systemMessage').show();
         };
     }
 

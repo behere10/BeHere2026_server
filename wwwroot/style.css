@@ -5,7 +5,7 @@ body {
 }
 
 p {
-    margin: 0.75rem 0.75rem 0;
+    margin: 0.25rem 0.25rem 0;
 }
 
 
@@ -75,8 +75,8 @@ p {
     background-color: #000;
     color: #FFF;
     white-space: nowrap;
-    font-size: 18px;
-    padding: 0.75rem !important;
+    font-size: 16px;
+    padding: 0.5rem !important;
 }
 
 .title > span {
@@ -90,13 +90,13 @@ p {
 }
 
 .deviceMode {
-    width: 20%;
+    width: 25%;
     font-weight: bold;
     text-align: center;
 }
 
 .summary {
-    width: 65%;
+    width: 60%;
 }
 
 .detailButton {

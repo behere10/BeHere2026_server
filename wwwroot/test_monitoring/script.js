@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', () =>
 
     const sendImageButton = document.getElementById('sendImageButton');
 
+    const sendStatusButton = document.getElementById('sendStatusButton');
+
+    const sendCommandFix = document.getElementById('sendCommandFix');
+    const sendCommandRelease = document.getElementById('sendCommandRelease');
+
     const hostname = window.location.hostname;
     const hostPort = 3000;
 
@@ -162,6 +167,33 @@ document.addEventListener('DOMContentLoaded', () =>
 
         statusData.picoTemp = parseFloat(document.getElementById('picoTemp').value);
 
+
+        ws.send(JSON.stringify(statusData));
+        addMessage('SEND', JSON.stringify(statusData, null, 1));
+    });
+
+
+    sendCommandFix.addEventListener('click', () => {
+        const statusData = {
+            type: 'command',
+            command: 'fix'
+        };
+
+
+        statusData.deviceName = document.getElementById('deviceNameCommand').value;
+
+        ws.send(JSON.stringify(statusData));
+        addMessage('SEND', JSON.stringify(statusData, null, 1));
+    });
+
+    sendCommandRelease.addEventListener('click', () => {
+        const statusData = {
+            type: 'command',
+            command: 'release'
+        };
+
+
+        statusData.deviceName = document.getElementById('deviceNameCommand').value;
 
         ws.send(JSON.stringify(statusData));
         addMessage('SEND', JSON.stringify(statusData, null, 1));

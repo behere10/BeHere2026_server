@@ -23,6 +23,10 @@ p button {
     margin-left: -40px;
 }
 
+p button + button {
+    margin-left: 0px;
+}
+
 #internalBatteryLevel, #chargeVoltage, #chargeCurrent, #picoTemp {
     width: 3rem;
     text-align: right;

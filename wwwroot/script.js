@@ -1,3 +1,6 @@
+let ws = null;
+
+
 function newStatus(status)
 {
     let $newStatus = $(`
@@ -19,11 +22,17 @@ function newStatus(status)
             Power Bank Status: <span class="pbStatus"></span><span class="pbCharging"> (<span class="chargeVoltage"></span>V / <span class="chargeCurrent"></span>A)</span>
         </p>
         <p>
-            AR Tracking State: <span class="arTrackingState"></span>, Elapsed time in AR mode: <span class="arModeTime"></span> sec
+            AR Tracking State: <span class="arTrackingState"></span>,
+            Elapsed time in AR mode: <span class="arModeTime"></span> sec,
+            Staying time in AR mode: <span class="arStayTime"></span> sec
         </p>
         <p>
             LCD Power: <span class="lcdPower"></span>,
             Pi PICO Temperature: <span class="picoTempC"></span>℃ / <span class="picoTempF"></span>℉
+        </p>
+        <p>
+            AR space is fixed: <span class="arIsFixed"></span>&nbsp;
+            <button class="arSpaceFix">FIX</button><button class="arSpaceRelease">RELEASE</button>
         </p>
     </div>
     <div class="warnings">
@@ -39,6 +48,8 @@ function newStatus(status)
     let $downBtn = $newStatus.find('.detailButton .down');
     let $upBtn = $newStatus.find('.detailButton .up');
     let $details = $newStatus.find('.details');
+    let $arSpaceFix = $newStatus.find('.arSpaceFix');
+    let $arSpaceRelease = $newStatus.find('.arSpaceRelease');
     let $warnings = $newStatus.find('.warnings');
 
     $downBtn.show();
@@ -58,6 +69,29 @@ function newStatus(status)
         $details.hide();
     });
 
+    $arSpaceFix.on('click', function () {
+        console.log("FIX", status.deviceName);
+
+        const statusData = {
+            type: 'command',
+            command: 'fix',
+            deviceName: status.deviceName
+        };
+
+        ws.send(JSON.stringify(statusData));
+    });
+
+    $arSpaceRelease.on('click', function () {
+        console.log("RELEASE", status.deviceName);
+
+        const statusData = {
+            type: 'command',
+            command: 'release',
+            deviceName: status.deviceName
+        };
+
+        ws.send(JSON.stringify(statusData));
+    });
 
     let $items = $('#statusView').children().get().sort(function(a, b) {
         var idA = $(a).attr('id');
@@ -103,10 +137,15 @@ function updateStatus(status)
     let $chargeCurrent = $root.find('.chargeCurrent');
     let $arTrackingState = $root.find('.arTrackingState');
     let $arModeTime = $root.find('.arModeTime');
+    let $arStayTime = $root.find('.arStayTime');
 
     let $lcdPower = $root.find('.lcdPower');
     let $picoTempC = $root.find('.picoTempC');
     let $picoTempF = $root.find('.picoTempF');
+
+    let $arIsFixed = $root.find('.arIsFixed');
+    let $arSpaceFix = $root.find('.arSpaceFix');
+    let $arSpaceRelease = $root.find('.arSpaceRelease');
 
 
     $deviceMode.empty();
@@ -123,6 +162,8 @@ function updateStatus(status)
     $chargeCurrent.empty();
     $arTrackingState.empty();
     $arModeTime.empty();
+    $arStayTime.empty();
+    $arIsFixed.empty();
 
     $lcdPower.empty();
     $picoTempC.empty();
@@ -131,17 +172,19 @@ function updateStatus(status)
 
     /*
     {
-        "arAnchorFound":true,
-        "arModeTime":268,
+        "arIsFixed":false,
+        "arModeTime":0,
+        "arStayTime":0,
+        "arTrackingState":"not available",
         "chargeCurrent":0.024590538814663887,
         "chargeVoltage":0,
-        "deviceName":"iPhone",
+        "deviceName":"Camera03",
         "internalBatteryLevel":1,
-        "internalBatteryStatus":"charging",
-        "isAR":true,
-        "lcd":true,
+        "internalBatteryStatus":"full",
+        "isAR":false,
+        "lcd":false,
         "midiBoard":true,
-        "picoTemp":32.756099700927734,
+        "picoTemp":40.246295928955078,
         "thermalStatus":"nominal",
         "type":"status"
     }
@@ -254,6 +297,33 @@ function updateStatus(status)
     }
 
 
+    if (status.midiBoard && status.isAR) {
+        $arStayTime.append(`${status.arStayTime}`);
+    }
+    else {
+        $arStayTime.append('---');
+    }
+
+
+    if (!status.midiBoard && status.isAR) {
+        if (status.arIsFixed) {
+            $arIsFixed.append('<span class="green">YES</span>');
+            $arSpaceFix.hide();
+            $arSpaceRelease.show();
+        }
+        else {
+            $arIsFixed.append('NO');
+            $arSpaceFix.show();
+            $arSpaceRelease.hide();
+        }
+    }
+    else {
+        $arIsFixed.append('---');
+        $arSpaceFix.hide();
+        $arSpaceRelease.hide();
+    }
+
+
     if (status.midiBoard) {
         if (status.lcd) {
             $lcdPower.append(`<span class="green">ON</span>`);
@@ -356,9 +426,15 @@ function updateStatus(status)
         }
     }
 
-    if (status.isAR) {
-        if (status.arTrackingState === "not available") {
+    if (status.isAR && !status.arIsFixed) {
+        if (status.arTrackingState !== "normal") {
             warnings += '<p class="bold red">AR tracking is not available.</p>';
+        }
+    }
+
+    if (status.midiBoard && status.isAR) {
+        if (status.arStayTime >= 1800) {
+            warnings += '<p class="bold red">Move camera.</p>';
         }
     }
 
@@ -401,7 +477,6 @@ document.addEventListener('DOMContentLoaded', () =>
     }
 
 
-    let ws = null;
 
     function connectWebSocket() {
         addMessage('CONNECTING to the server...');

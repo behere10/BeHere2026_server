@@ -168,7 +168,8 @@ wss.on('connection', (ws) =>
             }
             else {
                 ws.role = msg.role;
-                console.log('NEW CLIENT:', ws.role);
+                ws.deviceName = msg.deviceName;
+                console.log('NEW CLIENT:', ws.role, ws.deviceName);
 
                 if (msg.role === 'display') {
                     sendImageList(wss.clients);
@@ -182,6 +183,18 @@ wss.on('connection', (ws) =>
             wss.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     if (client.role === "status_monitoring" || client.role === "monitoring") {
+                        client.send(`${message}`);
+                    }
+                }
+            });
+
+            return;
+        }
+
+        if (msg.type === "command") {
+            wss.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    if (client.deviceName === msg.deviceName || client.role === "monitoring") {
                         client.send(`${message}`);
                     }
                 }

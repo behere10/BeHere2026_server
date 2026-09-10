@@ -10,6 +10,10 @@ p {
 
 
 
+.right {
+    text-align: right;
+}
+
 .red {
     color: #F00;
 }

@@ -111,7 +111,7 @@ function updateStatus(status)
     console.log(status);
 
 
-    const timeLimitARMode = 72000000;
+    const timeLimitARMode = 10800;
 
 
     let $root = $(`#${status.deviceName}`);
@@ -417,7 +417,7 @@ function updateStatus(status)
     }
 
     if (status.midiBoard) {
-        if (status.arModeTime >= timeLimitARMode && status.externalBatteryStatus === 'discharging') {
+        if (status.arModeTime >= timeLimitARMode && status.chargeCurrent > 9000) {
             warnings += '<p class="bold red">Charging is recommended.</p>'
         }
 
